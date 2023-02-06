@@ -28,26 +28,26 @@ public struct CodeMarkdownConfiguration {
                 Text(code.trimmingCharacters(in: .newlines))
                     .font(
                         font?.monospaced()
-                        ?? .system(.body, design: .monospaced)
+                        ?? .system(size: NSFont.systemFontSize, design: .monospaced)
                     )
             } else {
                 Text(code.trimmingCharacters(in: .newlines))
-                    .font(.system(.body, design: .monospaced))
+                    .font(.system(size: NSFont.systemFontSize, design: .monospaced))
             }
             #elseif os(iOS)
             if #available(iOS 15, *) {
                 Text(code.trimmingCharacters(in: .newlines))
                     .font(
                         font?.monospaced()
-                            ?? .system(.body, design: .monospaced)
+                            ?? .system(size: NSFont.systemFontSize, design: .monospaced)
                     )
             } else {
                 Text(code.trimmingCharacters(in: .newlines))
-                    .font(.system(.body, design: .monospaced))
+					.font(.system(size: NSFont.systemFontSize, design: .monospaced))
             }
             #else
             Text(code.trimmingCharacters(in: .newlines))
-                .font(.system(.body, design: .monospaced))
+				.font(.system(size: NSFont.systemFontSize, design: .monospaced))
             #endif
         }
     }

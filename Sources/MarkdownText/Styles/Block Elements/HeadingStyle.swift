@@ -21,10 +21,17 @@ public struct HeadingMarkdownConfiguration {
     ///         .foregroundColor(.accentColor)
     let content: InlineMarkdownConfiguration
 
+	public var preferredWeight: Font.Weight {
+		switch level {
+		case 1: return .bold
+		default: return .semibold
+		}
+	}
+	
     /// The preferred text tyle for this heading.
     public var preferredStyle: Font.TextStyle {
         switch level {
-        case 1: return .title
+        case 1: return .largeTitle
         case 2:
             if #available(iOS 14.0, *) {
                 return .title2
@@ -47,14 +54,22 @@ public struct HeadingMarkdownConfiguration {
         let content: InlineMarkdownConfiguration
 
         var body: some View {
-            content.label
+			HStack(spacing:0) {
+				if level == 1 {
+					Spacer()
+				}
+				content.label
+				if level == 1 {
+					Spacer()
+				}
+			}
         }
     }
 
     /// Returns a default heading markdown representation
     public var label: some View {
         Label(level: level, content: content)
-            .font(.system(preferredStyle).weight(.bold))
+            .font(.system(preferredStyle).weight(preferredWeight))
     }
 }
 

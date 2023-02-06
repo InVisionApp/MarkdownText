@@ -19,22 +19,22 @@ public struct InlineCodeMarkdownConfiguration {
         #if os(macOS)
         if #available(macOS 12, *) {
             return Text(code)
-                .font(font?.monospaced() ?? .system(.body, design: .monospaced))
+                .font(font?.monospaced() ?? .system(size: NSFont.systemFontSize, design: .monospaced))
         } else {
             return Text(code)
-                .font(.system(.body, design: .monospaced))
+                .font(.system(size: NSFont.systemFontSize, design: .monospaced))
         }
         #elseif os(iOS)
         if #available(iOS 15, *) {
             return Text(code)
-                .font(font?.monospaced() ?? .system(.body, design: .monospaced))
+                .font(font?.monospaced() ?? .system(size: NSFont.systemFontSize, design: .monospaced))
         } else {
             return Text(code)
-                .font(.system(.body, design: .monospaced))
+                .font(.system(size: NSFont.systemFontSize, design: .monospaced))
         }
         #else
         return Text(code)
-            .font(.system(.body, design: .monospaced))
+            .font(.system(size: NSFont.systemFontSize, design: .monospaced))
         #endif
     }
 }

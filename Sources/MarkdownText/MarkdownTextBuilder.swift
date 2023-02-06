@@ -22,6 +22,7 @@ struct MarkdownTextBuilder: MarkupWalker {
         var attributes: InlineAttributes = []
         var parent = markdown.parent
         var text = markdown.string
+		var destination: String? = nil
 
         while parent != nil {
             defer { parent = parent?.parent }
@@ -47,11 +48,12 @@ struct MarkdownTextBuilder: MarkupWalker {
                  One idea here could be to collect links like footnotes, reference them in the rendered result as such (at least by default) and then add actual buttons to the bottom of the rendered output?
                  */
                 attributes.insert(.link)
-                text = link.plainText // + (link.destination.flatMap { " [\($0)]" } ?? "")
+                text = link.plainText
+				destination = link.destination
             }
         }
 
-        inlineElements.append(.init(content: .init(text), attributes: attributes))
+		inlineElements.append(.init(content: .init(text), destination: destination, attributes: attributes))
     }
 
     mutating func visitOrderedList(_ markdown: OrderedList) {
@@ -200,5 +202,9 @@ struct MarkdownTextBuilder: MarkupWalker {
     mutating func visitBlockDirective(_: BlockDirective) { }
     mutating func visitCustomInline(_: CustomInline) { }
     mutating func visitHTMLBlock(_: HTMLBlock) { }
-    mutating func visitInlineHTML(_: InlineHTML) { }
+    mutating func visitInlineHTML(_ html: InlineHTML) {
+		if html.rawHTML == "<br/>" {
+			visitText(Text("\n"))
+		}
+	}
 }

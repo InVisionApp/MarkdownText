@@ -34,7 +34,7 @@ public struct ParagraphMarkdownConfiguration {
         let content: InlineMarkdownConfiguration
 
         var body: some View {
-            content.label
+			content.label.font(.system(size: NSFont.systemFontSize))
         }
     }
 

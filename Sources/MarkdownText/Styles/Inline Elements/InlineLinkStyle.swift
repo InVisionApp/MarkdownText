@@ -10,30 +10,49 @@ public protocol InlineLinkMarkdownStyle {
 
 /// The properties of an inline link markdown element
 public struct InlineLinkMarkdownConfiguration {
+	public init(content: String, destination: String?) {
+		self.content = content
+		self.destination = destination
+	}
+	
     /// The textual content for this element
-    public let content: Text
+    public let content: String
+	/// The destination for this element
+	public let destination: String?
     /// Returns a default inline link markdown representation
-    public var label: Text { content }
+    public var label: Text { Text(verbatim: content) }
 }
 
 /// An inline link style that sets the `foregroundColor` to the view's current `accentColor`
 public struct DefaultInlineLinkMarkdownStyle: InlineLinkMarkdownStyle {
-    public init() { }
+	let interactive: Bool
+	
+	public init(interactive: Bool) {
+		self.interactive = interactive
+	}
+	
     public func makeBody(configuration: Configuration) -> Text {
-        configuration.label
-            .foregroundColor(.accentColor)
+		if #available(macOS 12, *), interactive, let destination = configuration.destination {
+			return Text(try! AttributedString(markdown: "[\(configuration.content)](\(destination))"))
+		} else {
+			return configuration.label
+				.foregroundColor(Color(NSColor.linkColor))
+		}
     }
 }
 
 public extension InlineLinkMarkdownStyle where Self == DefaultInlineLinkMarkdownStyle {
-    /// An inline link style that sets the `foregroundColor` to the view's current `accentColor`
+    /// An inline link style that sets the `foregroundColor` to the system link color
     ///
-    /// - note: Inline links are always **non-interactive**.
-    static var nonInteractiveInline: Self { .init() }
+	/// - note: **Non-interactive** inline links.
+	static var interactiveInline: Self { .init(interactive: true) }
+	///
+    /// - note: **Non-interactive** inline links.
+    static var nonInteractiveInline: Self { .init(interactive: false) }
 }
 
 private struct InlineLinkMarkdownEnvironmentKey: EnvironmentKey {
-    static let defaultValue: InlineLinkMarkdownStyle = DefaultInlineLinkMarkdownStyle.nonInteractiveInline
+    static let defaultValue: InlineLinkMarkdownStyle = DefaultInlineLinkMarkdownStyle.interactiveInline
 }
 
 public extension EnvironmentValues {

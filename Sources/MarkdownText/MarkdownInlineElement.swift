@@ -1,9 +1,12 @@
 import SwiftUI
 
 /// Represents a single inline element, including any applied attributes (e.g. strong, italic, etc)
-public struct MarkdownInlineElement {
+public struct MarkdownInlineElement: Identifiable {
+	public var id = UUID()
     /// The string content for this inline element
     public var content: String
+	/// The destination for this inline element
+	public var destination: String?
     /// The attributes to apply to this content
     public var attributes: InlineAttributes = []
 }
@@ -41,7 +44,6 @@ internal extension Text {
         strong: StrongMarkdownStyle,
         emphasis: EmphasisMarkdownStyle,
         strikethrough: StrikethroughMarkdownStyle,
-        link: InlineLinkMarkdownStyle,
         attributes: InlineAttributes
     ) -> Self {
         var text = self
@@ -58,10 +60,6 @@ internal extension Text {
             text = strikethrough.makeBody(configuration: .init(content: text))
         }
 
-        if attributes.contains(.link) {
-            text = link.makeBody(configuration: .init(content: text))
-        }
-
-        return text
+		return text
     }
 }
